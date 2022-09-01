@@ -4,6 +4,9 @@
 // Listen to user events and update the DOM
 
 document.addEventListener('DOMContentLoaded', () => {
+    //Display first ramen details
+    displayFirstRamen()
+
     // Display ramen images
     displayRamenImages()
 
@@ -110,5 +113,40 @@ function displayNewRamen(){
             const ramenComment = document.querySelector('#comment-display');
             ramenComment.textContent = newRamenComment;
         })
+        // POST new ramen that is created
+        const ramenDetails = {
+            name: newRamenName,
+            restaurant: newRamenRestaurant,
+            rating: newRamenRating,
+            comment: newRamenComment
+        };
+        postRamen(ramenDetails);
+
+        //Reset form
+        event.target.reset();
     })
+}
+
+// BONUS
+// Display the first ramen's details immediately on page load
+function displayFirstRamen(){
+    fetch('http://localhost:3000/ramens/1')
+    .then( (response) => response.json())
+    .then( (result) => {
+        displayRamenDetails(result);
+    })
+}
+
+// Make a POST request to add new ramen to the server database
+function postRamen(ramenDetails){
+    fetch('http://localhost:3000/ramens', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        },
+        body: JSON.stringify(ramenDetails)
+    })
+    .then( (response) => response.json())
+    .then( () => alert('Ramen created successfully!'))
 }
